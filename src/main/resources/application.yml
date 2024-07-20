@@ -16,14 +16,15 @@ spring:
       hibernate:
         format_sql: false
         use_sql_comments: true
-#cloud:
-#  aws:
-#    credentials:
-#      access-key: ${ACCESS_KEY}
-#      secret-key: ${S3_SECRET_KEY}
-#    s3:
-#      bucket: rerebucket
-#    region:
-#      static: ap-northeast-2
-#    stack:
-#      auto: false
+
+#logging:
+#  level:
+#    org.hibernate.sql: debug
+#    org.hibernate.type: trace
+
+jwt:
+  secret: ${jwt.secret}
+  access-token-validity-in-milliseconds: ${JWT_ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS}
+#token:
+#  expire:
+#    time: ${token.expire.time}
