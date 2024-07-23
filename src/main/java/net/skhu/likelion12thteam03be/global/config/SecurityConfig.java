@@ -32,10 +32,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/join").permitAll()  // 모든 사용자 회원가입 엔드포인트 허용
-                        .requestMatchers(HttpMethod.POST, "/users/login").permitAll() // 모든 사용자 회원가입 엔드포인트 허용
-                        .requestMatchers(HttpMethod.GET, "/users").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/**").permitAll()  // 모든 사용자 회원가입 엔드포인트 허용
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(sessionManagement -> sessionManagement

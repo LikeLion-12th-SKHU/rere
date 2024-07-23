@@ -5,6 +5,7 @@ import net.skhu.likelion12thteam03be.global.jwt.TokenProvider;
 import net.skhu.likelion12thteam03be.user.api.dto.request.UserLoginReqDto;
 import net.skhu.likelion12thteam03be.user.api.dto.request.UserSaveReqDto;
 import net.skhu.likelion12thteam03be.user.api.dto.response.UserLoginResDto;
+import net.skhu.likelion12thteam03be.user.domain.Role;
 import net.skhu.likelion12thteam03be.user.domain.User;
 import net.skhu.likelion12thteam03be.user.domain.repository.UserRepository;
 import net.skhu.likelion12thteam03be.user.exception.InvalidUserException;
@@ -31,6 +32,7 @@ public class UserService {
                 .loginId(userSaveReqDto.loginId())
                 .password(passwordEncoder.encode(userSaveReqDto.password()))
                 .nickname(userSaveReqDto.nickname())
+                .role(Role.ROLE_USER)
                 .build();
         userRepository.save(user);
     }
