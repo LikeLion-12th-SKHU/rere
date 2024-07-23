@@ -3,7 +3,6 @@ package net.skhu.likelion12thteam03be.global.template;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-// 응답 템플릿
 @Getter
 public class RspTemplate<T> {
     int statusCode;
