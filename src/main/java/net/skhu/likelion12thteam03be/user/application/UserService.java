@@ -26,7 +26,7 @@ public class UserService {
     @Transactional
     public void join(UserSaveReqDto userSaveReqDto) {
         if (userRepository.existsByLoginId(userSaveReqDto.loginId())) {
-            throw new InvalidUserException("이미 존재하는 아이디입니다.");  // incaalidUserException
+            throw new InvalidUserException("이미 존재하는 아이디입니다.");
         }
         User user = User.builder()
                 .loginId(userSaveReqDto.loginId())
