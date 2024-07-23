@@ -1,6 +1,7 @@
 package net.skhu.likelion12thteam03be.post.api.dto;
 
 import net.skhu.likelion12thteam03be.post.api.dto.request.PostSaveReqDto;
+import net.skhu.likelion12thteam03be.post.api.dto.request.PostUpdateReqDto;
 import net.skhu.likelion12thteam03be.post.api.dto.response.PostInfoResDto;
 import net.skhu.likelion12thteam03be.post.api.dto.response.PostListResDto;
 import net.skhu.likelion12thteam03be.post.application.PostService;
@@ -54,11 +55,11 @@ public class PostController {
 
 
     // 글 수정
-    /*@PatchMapping("/{postId}")
-    public ResponseEntity<String> postUpdate(@PathVariable("postId") Long postId, @RequestBody @Valid PostUpdateReqDto postUpdateReqDto) {
+    @PatchMapping("/{postId}")
+    public ResponseEntity<String> postUpdate(@PathVariable("postId") Long postId, @RequestBody PostUpdateReqDto postUpdateReqDto) {
         postService.postUpdate(postId, postUpdateReqDto);
         return new ResponseEntity<>("Successful Post Update", HttpStatus.OK);
-    }*/
+    }
 
     // 글 삭제
     @DeleteMapping("/{postId}")

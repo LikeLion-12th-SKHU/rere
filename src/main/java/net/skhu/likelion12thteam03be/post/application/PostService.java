@@ -88,15 +88,18 @@ public class PostService {
 
 
     // 글 수정
-    /*@Transactional
-    public PostInfoResDto postUpdate(Long postId, PostUpdateReqDto postUpdateReqDto) {
+    @Transactional
+    public void postUpdate(Long postId, PostUpdateReqDto postUpdateReqDto) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 글을 수정할 수 없습니다. postId = " + postId)
         );
 
-        post.update(postUpdateReqDto);
-        return PostInfoResDto.from(post);
-    }*/
+        Category category = categoryRepository.findById(postUpdateReqDto.categoryId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다. categoryId = " + postUpdateReqDto.categoryId()));
+
+        post.update(category, postUpdateReqDto);
+        PostInfoResDto.from(post);
+    }
 
     // 글 삭제
     @Transactional

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.skhu.likelion12thteam03be.category.domain.Category;
+import net.skhu.likelion12thteam03be.post.api.dto.request.PostUpdateReqDto;
 
 @Entity
 @Getter
@@ -48,15 +49,15 @@ public class Post {
         this.colorId = colorId;
     }
 
-    /*public void update(PostUpdateReqDto postUpdateReqDto) {
+    public void update(Category category, PostUpdateReqDto postUpdateReqDto) {
         this.title = postUpdateReqDto.title();
         this.content = postUpdateReqDto.content();
         this.imgUrl = postUpdateReqDto.imgUrl();
         this.locationId = postUpdateReqDto.locationId();
         this.time = postUpdateReqDto.time();
         this.price = postUpdateReqDto.price();
-        this.category = postUpdateReqDto.category();
+        this.category = category;
         this.emotionId = postUpdateReqDto.emotionId();
         this.colorId = postUpdateReqDto.colorId();
-    }*/
+    }
 }
