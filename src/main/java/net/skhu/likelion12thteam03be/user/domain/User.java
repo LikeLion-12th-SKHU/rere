@@ -27,15 +27,19 @@ public class User {
     private String password;
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
 /*    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();*/
 
     @Builder
-    public User(String loginId, String password, String nickname) {
+    public User(String loginId, String password, String nickname, Role role) {
         validateNickname(nickname);
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
+        this.role = role;
     }
 
     private void validateNickname(String nickname) {
