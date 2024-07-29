@@ -16,15 +16,12 @@ spring:
       hibernate:
         format_sql: false
         use_sql_comments: true
-
-#logging:
-#  level:
-#    org.hibernate.sql: debug
-#    org.hibernate.type: trace
-
 jwt:
   secret: ${jwt.secret}
   access-token-validity-in-milliseconds: ${JWT_ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS}
 #token:
 #  expire:
 #    time: ${token.expire.time}
+server:
+  servlet:
+    context-path: /
