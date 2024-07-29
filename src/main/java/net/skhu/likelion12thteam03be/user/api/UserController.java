@@ -11,7 +11,7 @@ import net.skhu.likelion12thteam03be.user.api.dto.response.UserLoginResDto;
 import net.skhu.likelion12thteam03be.user.application.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-// 배포 테스트
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
