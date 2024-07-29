@@ -1,3 +1,4 @@
+/*
 package net.skhu.likelion12thteam03be.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -69,3 +70,4 @@ public class S3Service {
         return Optional.empty();
     }
 }
+*/
