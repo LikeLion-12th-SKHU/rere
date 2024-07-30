@@ -69,6 +69,7 @@ public class S3Service {
 
         return Optional.empty();
     }
+
     public void delete(String imgUrl, String dirName) {
         String imgName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
         String fileName = dirName + "/" + imgName;
