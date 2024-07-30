@@ -5,12 +5,11 @@ spring:
     url: ${spring.datasource.url}
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
-    driver-class-name: ${spring.datasource.driver-class-name}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
