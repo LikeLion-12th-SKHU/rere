@@ -1,4 +1,4 @@
-package net.skhu.likelion12thteam03be.location.domain;
+package net.skhu.likelion12thteam03be.mood.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -14,21 +14,21 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Location {
+public class Mood {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "locationId")
-    private Long locationId;
+    @Column(name = "moodId")
+    private Long moodId;
 
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "mood", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> postList = new ArrayList<>();
 
     @Builder
-    public Location(String name) {
+    public Mood(String name) {
         this.name = name;
     }
 }

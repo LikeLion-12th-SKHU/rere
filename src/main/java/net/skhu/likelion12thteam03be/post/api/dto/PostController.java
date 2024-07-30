@@ -6,20 +6,27 @@ import net.skhu.likelion12thteam03be.post.api.dto.response.PostInfoResDto;
 import net.skhu.likelion12thteam03be.post.api.dto.response.PostListResDto;
 import net.skhu.likelion12thteam03be.post.application.PostService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
 
-    public PostController(PostService postService) { this.postService = postService; }
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     // 글 저장
-    @PostMapping()
-    public ResponseEntity<String> postSave(@RequestBody PostSaveReqDto postSaveReqDto) {
-        postService.postSave(postSaveReqDto);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> postSave(@RequestPart("post") PostSaveReqDto postSaveReqDto, @RequestPart("imgUrl") MultipartFile imgUrl, Principal principal) throws IOException {
+        postService.postSave(postSaveReqDto, imgUrl, principal);
         return new ResponseEntity<>("Successful Post Save", HttpStatus.CREATED);
     }
 
@@ -51,9 +58,12 @@ public class PostController {
         return new ResponseEntity<>(postListResDto, HttpStatus.OK);
     }
 
-    // 글 감정별 조회
-
-    // 글 색상별 조회
+    // 글 분위기별 조회
+    @GetMapping("/moods/{moodId}")
+    public ResponseEntity<PostListResDto> postFindByMoodId(@PathVariable("moodId") Long moodId) {
+        PostListResDto postListResDto = postService.postFindByMoodId(moodId);
+        return new ResponseEntity<>(postListResDto, HttpStatus.OK);
+    }
 
     // 글 작성자별 조회(내 글 조회)
     /*@GetMapping("/users/{userId}")
@@ -67,14 +77,14 @@ public class PostController {
 
     // 글 수정
     @PatchMapping("/{postId}")
-    public ResponseEntity<String> postUpdate(@PathVariable("postId") Long postId, @RequestBody PostUpdateReqDto postUpdateReqDto) {
-        postService.postUpdate(postId, postUpdateReqDto);
+    public ResponseEntity<String> postUpdate(@PathVariable("postId") Long postId, @RequestPart("post") PostUpdateReqDto postUpdateReqDto, @RequestPart("imgUrl") MultipartFile imgUrl) throws IOException {
+        postService.postUpdate(postId, postUpdateReqDto, imgUrl);
         return new ResponseEntity<>("Successful Post Update", HttpStatus.OK);
     }
 
     // 글 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> postDelete(@PathVariable("postId") Long postId) {
+    public ResponseEntity<String> postDelete(@PathVariable("postId") Long postId) throws IOException {
         postService.postDelete(postId);
         return new ResponseEntity<>("Successful Post Delete", HttpStatus.OK);
     }
