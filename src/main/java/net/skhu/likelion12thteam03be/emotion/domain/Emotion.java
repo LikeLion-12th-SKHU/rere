@@ -14,15 +14,17 @@ public class Emotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    Emotions emotions;
+
     private String furniture;
     private String type;
     private String animalPic;
 
     @Builder
-    public Emotion(Long id, String name, String furniture, String type, String animalPic) {
+    public Emotion(Long id, Emotions emotions, String furniture, String type, String animalPic) {
         this.id = id;
-        this.name = name;
+        this.emotions = emotions;
         this.furniture = furniture;
         this.type = type;
         this.animalPic = animalPic;

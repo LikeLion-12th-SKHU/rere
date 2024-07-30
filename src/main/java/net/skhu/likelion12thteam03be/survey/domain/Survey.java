@@ -20,8 +20,8 @@ public class Survey {
     @Column(name = "survey_id")
     private Long id;
 
-    @OneToOne(mappedBy = "user")
-    @Column(name = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne

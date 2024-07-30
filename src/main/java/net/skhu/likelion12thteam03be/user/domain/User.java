@@ -9,6 +9,7 @@ import net.skhu.likelion12thteam03be.survey.domain.Survey;
 import net.skhu.likelion12thteam03be.user.exception.InvalidNickNameAddressException;
 import net.skhu.likelion12thteam03be.user.exception.InvalidUserException;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,20 +32,20 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne
-    @JoinColumn(name = "survey_id")
-    private Survey survey;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Survey> surveys;
 
 /*    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();*/
 
     @Builder
-    public User(String loginId, String password, String nickname, Role role) {
+    public User(String loginId, String password, String nickname, Role role, List<Survey> surveys) {
         validateNickname(nickname);
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
         this.role = role;
+        this.surveys = surveys;
     }
 
     private void validateNickname(String nickname) {
