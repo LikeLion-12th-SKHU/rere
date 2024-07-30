@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.skhu.likelion12thteam03be.survey.domain.Survey;
 import net.skhu.likelion12thteam03be.user.exception.InvalidNickNameAddressException;
 import net.skhu.likelion12thteam03be.user.exception.InvalidUserException;
 
@@ -29,6 +30,10 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToOne
+    @JoinColumn(name = "survey_id")
+    private Survey survey;
 
 /*    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();*/
