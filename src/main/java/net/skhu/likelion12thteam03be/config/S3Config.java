@@ -1,3 +1,4 @@
+/*
 package net.skhu.likelion12thteam03be.config;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -35,3 +36,4 @@ public class S3Config {
                 .build();
     }
 }
+*/
