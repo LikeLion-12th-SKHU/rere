@@ -5,7 +5,7 @@ spring:
     url: ${spring.datasource.url}
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
-    driver-class-name: ${spring.datasource.driver-class-name}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
     hibernate:
@@ -15,24 +15,17 @@ spring:
       hibernate:
         format_sql: false
         use_sql_comments: true
-#logging:
-#  level:
-#    org.hibernate.sql: debug
-#    org.hibernate.type: trace
 jwt:
   secret: ${jwt.secret}
   access-token-validity-in-milliseconds: ${JWT_ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS}
-#token:
-#  expire:
-#    time: ${token.expire.time}
-#cloud:
-#  aws:
-#    credentials:
-#      access-key: ${ACCESS_KEY}
-#      secret-key: ${S3_SECRET_KEY}
-#    s3:
-#      bucket: projectrere
-#    region:
-#      static: ap-northeast-2
-#    stack:
-#      auto: false
+cloud:
+  aws:
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    s3:
+      bucket: projectrere
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
