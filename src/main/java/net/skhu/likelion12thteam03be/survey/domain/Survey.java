@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // test
 public class Survey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
