@@ -1,6 +1,6 @@
 package net.skhu.likelion12thteam03be.global.config;
 
-import lombok.RequiredArgsConstructor;
+import   lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.skhu.likelion12thteam03be.global.jwt.JwtAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
