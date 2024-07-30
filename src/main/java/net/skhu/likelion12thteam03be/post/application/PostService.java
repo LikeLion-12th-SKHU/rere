@@ -3,6 +3,8 @@ package net.skhu.likelion12thteam03be.post.application;
 import lombok.RequiredArgsConstructor;
 import net.skhu.likelion12thteam03be.category.domain.Category;
 import net.skhu.likelion12thteam03be.category.domain.repository.CategoryRepository;
+import net.skhu.likelion12thteam03be.location.domain.Location;
+import net.skhu.likelion12thteam03be.location.domain.repository.LocationRepository;
 import net.skhu.likelion12thteam03be.post.api.dto.request.PostSaveReqDto;
 import net.skhu.likelion12thteam03be.post.api.dto.request.PostUpdateReqDto;
 import net.skhu.likelion12thteam03be.post.api.dto.response.PostInfoResDto;
@@ -21,17 +23,21 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
+    private final LocationRepository locationRepository;
 
     @Transactional
     public void postSave(PostSaveReqDto postSaveReqDto) {
         Category category = categoryRepository.findById(postSaveReqDto.categoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다. categoryId = " + postSaveReqDto.categoryId()));
 
+        Location location = locationRepository.findById(postSaveReqDto.locationId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postSaveReqDto.locationId()));
+
         Post post = Post.builder()
                 .title(postSaveReqDto.title())
                 .content(postSaveReqDto.content())
                 .imgUrl(postSaveReqDto.imgUrl())
-                .locationId(postSaveReqDto.locationId())
+                .location(location)
                 .time(postSaveReqDto.time())
                 .price(postSaveReqDto.price())
                 .category(category)
@@ -61,6 +67,17 @@ public class PostService {
         return PostInfoResDto.from(post);
     }
 
+    // 글 위치별 조회
+    public PostListResDto postFindByLocationId(Long locationId) {
+        Optional<Post> post = postRepository.findById(locationId);
+
+        List<PostInfoResDto> postInfoResDtoList = post.stream()
+                .map(PostInfoResDto::from)
+                .toList();
+
+        return PostListResDto.from(postInfoResDtoList);
+    }
+
     // 글 카테고리별 조회
     public PostListResDto postFindByCategoryId(Long categoryId) {
         Optional<Post> posts = postRepository.findById(categoryId);
@@ -83,6 +100,9 @@ public class PostService {
         return PostListResDto.from(postInfoResDtoList);
     }
 
+    // 글 감정별 조회
+
+    // 글 색상별 조회
 
     // 글 검색 조회
 
@@ -97,7 +117,10 @@ public class PostService {
         Category category = categoryRepository.findById(postUpdateReqDto.categoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다. categoryId = " + postUpdateReqDto.categoryId()));
 
-        post.update(category, postUpdateReqDto);
+        Location location = locationRepository.findById(postUpdateReqDto.locationId())
+                        .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postUpdateReqDto.locationId()));
+
+        post.update(location, category, postUpdateReqDto);
         PostInfoResDto.from(post);
     }
 

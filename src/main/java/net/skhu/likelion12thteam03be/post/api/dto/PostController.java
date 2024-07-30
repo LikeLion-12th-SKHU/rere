@@ -37,12 +37,23 @@ public class PostController {
         return new ResponseEntity<>(postInfoResDto, HttpStatus.OK);
     }
 
+    // 글 위치별 조회
+    @GetMapping("/locations/{locationId}")
+    public ResponseEntity<PostListResDto> postFindByLocationId(@PathVariable("locationId") Long locationId) {
+        PostListResDto postListResDto = postService.postFindByLocationId(locationId);
+        return new ResponseEntity<>(postListResDto, HttpStatus.OK);
+    }
+
     // 글 카테고리별 조회
     @GetMapping("/categories/{categoryId}")
     public ResponseEntity<PostListResDto> postFindByCategoryId(@PathVariable("categoryId") Long categoryId) {
         PostListResDto postListResDto = postService.postFindByCategoryId(categoryId);
         return new ResponseEntity<>(postListResDto, HttpStatus.OK);
     }
+
+    // 글 감정별 조회
+
+    // 글 색상별 조회
 
     // 글 작성자별 조회(내 글 조회)
     /*@GetMapping("/users/{userId}")

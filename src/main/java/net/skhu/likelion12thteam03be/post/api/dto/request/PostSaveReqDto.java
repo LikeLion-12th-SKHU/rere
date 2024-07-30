@@ -4,11 +4,11 @@ public record PostSaveReqDto(
         String title,
         String content,
         String imgUrl,
-        String locationId,
+        Long locationId,
         Integer time,
         Integer price,
         Long categoryId,
-        String emotionId,
-        String colorId
+        Long emotionId,
+        Long colorId
 ) {
 }
