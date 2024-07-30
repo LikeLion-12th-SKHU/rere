@@ -1,6 +1,7 @@
 package net.skhu.likelion12thteam03be.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,5 +68,11 @@ public class S3Service {
         }
 
         return Optional.empty();
+    }
+    public void delete(String imgUrl, String dirName) {
+        String imgName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+        String fileName = dirName + "/" + imgName;
+
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
 }
