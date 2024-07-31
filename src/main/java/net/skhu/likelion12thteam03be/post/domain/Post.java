@@ -9,6 +9,7 @@ import net.skhu.likelion12thteam03be.category.domain.Category;
 import net.skhu.likelion12thteam03be.location.domain.Location;
 import net.skhu.likelion12thteam03be.mood.domain.Mood;
 import net.skhu.likelion12thteam03be.post.api.dto.request.PostUpdateReqDto;
+import net.skhu.likelion12thteam03be.user.domain.User;
 
 @Entity
 @Getter
@@ -40,12 +41,12 @@ public class Post extends Time {
 
     private String imgUrl; // 사진
 
-/*    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;*/
+    private User user;
 
     @Builder
-    public Post(String title, String content, Location location, Integer time, Integer price, Category category, Mood mood, String imgUrl) {
+    public Post(String title, String content, Location location, Integer time, Integer price, Category category, Mood mood, String imgUrl, User user) {
         this.title = title;
         this.content = content;
         this.location = location;

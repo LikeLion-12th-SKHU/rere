@@ -14,6 +14,8 @@ import net.skhu.likelion12thteam03be.post.api.dto.response.PostListResDto;
 import net.skhu.likelion12thteam03be.post.domain.Post;
 import net.skhu.likelion12thteam03be.post.domain.repository.PostRepository;
 import net.skhu.likelion12thteam03be.s3.S3Service;
+import net.skhu.likelion12thteam03be.user.domain.User;
+import net.skhu.likelion12thteam03be.user.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,11 +34,17 @@ public class PostService {
     private final LocationRepository locationRepository;
     private final S3Service s3Service;
     private final MoodRepository moodRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void postSave(PostSaveReqDto postSaveReqDto, MultipartFile multipartFile, Principal principal) throws IOException {
         String imgUrl = s3Service.upload(multipartFile, "post");
-        Long id = Long.parseLong(principal.getName());
+        String loginId = principal.getName();
+        System.out.println(loginId);
+
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id = " + loginId));
+
 
         Location location = locationRepository.findById(postSaveReqDto.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postSaveReqDto.locationId()));
@@ -56,6 +64,7 @@ public class PostService {
                 .category(category)
                 .mood(mood)
                 .imgUrl(imgUrl)
+                .user(user)
                 .build();
 
         postRepository.save(post);
