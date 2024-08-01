@@ -18,6 +18,7 @@ import net.skhu.likelion12thteam03be.user.domain.User;
 import net.skhu.likelion12thteam03be.user.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void postSave(PostSaveReqDto postSaveReqDto, MultipartFile multipartFile, Principal principal) throws IOException {
+    public void postSave(PostSaveReqDto postSaveReqDto, @RequestPart(required = false) MultipartFile multipartFile, Principal principal) throws IOException {
         String imgUrl = s3Service.upload(multipartFile, "post");
         String loginId = principal.getName();
 
