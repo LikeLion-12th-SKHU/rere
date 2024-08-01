@@ -18,25 +18,25 @@ public class Post extends Time {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "postId")
     private Long postId;
 
     private String title; // 제목
     private String content; // 내용
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "locationId")
     private Location location; // 거래 장소
 
     private Integer time; // 거래 시간
     private Integer price; // 가격
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "categoryId")
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "mood_id")
+    @JoinColumn(name = "moodId")
     private Mood mood; // 감정 키워드
 
     private String imgUrl; // 사진
@@ -46,8 +46,7 @@ public class Post extends Time {
     private User user;
 
     @Builder
-    public Post(User user, String title, String content, Location location, Integer time, Integer price, Category category, Mood mood, String imgUrl) {
-        this.user = user;
+    public Post(String title, String content, Location location, Integer time, Integer price, Category category, Mood mood, String imgUrl, User user) {
         this.title = title;
         this.content = content;
         this.location = location;
@@ -56,6 +55,7 @@ public class Post extends Time {
         this.category = category;
         this.mood = mood;
         this.imgUrl = imgUrl;
+        this.user = user;
     }
 
     public void update(Location location, Category category, PostUpdateReqDto postUpdateReqDto, Mood mood, String imgUrl) {

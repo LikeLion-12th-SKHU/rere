@@ -14,10 +14,13 @@ import net.skhu.likelion12thteam03be.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,14 +35,11 @@ public class TokenProvider {
     private String secret;
     private Key key;
 
-/*    @PostConstruct
-    public void init() {
-        byte[] key = Decoders.BASE64URL.decode(secret);
-        this.key = Keys.hmacShaKeyFor(key);
-    }*/
     @PostConstruct
     public void init() {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        this.secret = secret.replace('+', '-').replace('/', '_');
+        byte[] key = Decoders.BASE64URL.decode(secret);
+        this.key = Keys.hmacShaKeyFor(key);
     }
 
     public String generateToken(String loginId) {   // loginId
@@ -90,7 +90,9 @@ public class TokenProvider {
 
         User user = userRepository.findByLoginId(claims.getSubject()).orElseThrow();
 
-        return new UsernamePasswordAuthenticationToken(user.getLoginId(), "");
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
+        return new UsernamePasswordAuthenticationToken(user.getLoginId(),
+                "", authorities);
     }
 
 }

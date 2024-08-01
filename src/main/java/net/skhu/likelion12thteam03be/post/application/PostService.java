@@ -16,8 +16,6 @@ import net.skhu.likelion12thteam03be.post.domain.repository.PostRepository;
 import net.skhu.likelion12thteam03be.s3.S3Service;
 import net.skhu.likelion12thteam03be.user.domain.User;
 import net.skhu.likelion12thteam03be.user.domain.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,24 +38,12 @@ public class PostService {
 
     @Transactional
     public void postSave(PostSaveReqDto postSaveReqDto, MultipartFile multipartFile, Principal principal) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalArgumentException("인증되지 않은 사용자입니다.");
-        }
-        String loginId = authentication.getName();
-        System.out.println("In PostService : loginId = " + loginId);
         String imgUrl = s3Service.upload(multipartFile, "post");
-/*        System.out.println("---------------------------");
-        System.out.println(principal.getName());
-        System.out.println("---------------------------");*/
-//        String LoginId = principal.getName();
-//        Long id = Long.parseLong(principal.getName());
-
-        /*User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다. id = " + id));*/
+        String loginId = principal.getName();
 
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다. LoginId = " + loginId));
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id = " + loginId));
+
 
         Location location = locationRepository.findById(postSaveReqDto.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postSaveReqDto.locationId()));
@@ -69,7 +55,6 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 분위기가 존재하지 않습니다. moodId = " + postSaveReqDto.moodId()));
 
         Post post = Post.builder()
-                .user(user)
                 .title(postSaveReqDto.title())
                 .content(postSaveReqDto.content())
                 .location(location)
@@ -78,6 +63,7 @@ public class PostService {
                 .category(category)
                 .mood(mood)
                 .imgUrl(imgUrl)
+                .user(user)
                 .build();
 
         postRepository.save(post);
@@ -158,13 +144,20 @@ public class PostService {
 
     // 글 수정
     @Transactional
-    public void postUpdate(Long postId, PostUpdateReqDto postUpdateReqDto, MultipartFile multipartFile) throws IOException {
+    public void postUpdate(Long postId, PostUpdateReqDto postUpdateReqDto, MultipartFile multipartFile, Principal principal) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 글을 수정할 수 없습니다. postId = " + postId)
         );
 
+        String loginId = principal.getName();
+        User currentUser = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("현재 사용자 정보를 찾을 수 없습니다. username = " + loginId));
+        if (!post.getUser().getLoginId().equals(currentUser.getLoginId())) {
+            throw new SecurityException("이 글을 수정할 권한이 없습니다.");
+        }
+
         Location location = locationRepository.findById(postUpdateReqDto.locationId())
-                        .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postUpdateReqDto.locationId()));
+                .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postUpdateReqDto.locationId()));
 
         Category category = categoryRepository.findById(postUpdateReqDto.categoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다. categoryId = " + postUpdateReqDto.categoryId()));
@@ -175,16 +168,21 @@ public class PostService {
         String imgUrl = s3Service.upload(multipartFile, "post");
 
         post.update(location, category, postUpdateReqDto, mood, imgUrl);
-        PostInfoResDto.from(post);
+        postRepository.save(post);
     }
 
     // 글 삭제
     @Transactional
-    public void postDelete(Long postId) throws IOException {
+    public void postDelete(Long postId, Principal principal) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 글을 삭제할 수 없습니다. postId = " + postId)
         );
-
+        String loginId = principal.getName();
+        User currentUser = userRepository.findByLoginId(loginId)
+                .orElseThrow(()-> new IllegalArgumentException("현재 사용자 정보를 찾을 수 없습니다. username = " + loginId));
+        if (!post.getUser().getLoginId().equals(currentUser.getLoginId())) {
+            throw new SecurityException("이 글을 삭제할 권한이 없습니다.");
+        }
         Optional<String> imgUrl = Optional.ofNullable(post.getImgUrl());
 
         imgUrl.ifPresentOrElse(
@@ -192,7 +190,7 @@ public class PostService {
                     try {
                         s3Service.delete(url, "post");
                     } catch (IllegalArgumentException e) {
-                        throw new IllegalArgumentException("이미지 삭제 중 오류 발생", e);
+                        throw new IllegalArgumentException("이미지 삭제 중 오류 발 생", e);
                     }
                     postRepository.delete(post);
                 },

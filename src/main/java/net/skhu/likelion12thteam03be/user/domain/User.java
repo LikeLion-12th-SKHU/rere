@@ -41,13 +41,12 @@ public class User {
     private List<Post> posts = new ArrayList<>();
 
     @Builder
-    public User(String loginId, String password, String nickname, Role role, List<Survey> surveys) {
+    public User(String loginId, String password, String nickname, Role role) {
         validateNickname(nickname);
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
         this.role = role;
-        this.surveys = surveys;
     }
 
     private void validateNickname(String nickname) {
