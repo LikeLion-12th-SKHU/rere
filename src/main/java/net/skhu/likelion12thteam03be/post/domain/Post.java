@@ -9,6 +9,7 @@ import net.skhu.likelion12thteam03be.category.domain.Category;
 import net.skhu.likelion12thteam03be.location.domain.Location;
 import net.skhu.likelion12thteam03be.mood.domain.Mood;
 import net.skhu.likelion12thteam03be.post.api.dto.request.PostUpdateReqDto;
+import net.skhu.likelion12thteam03be.user.domain.User;
 
 @Entity
 @Getter
@@ -17,35 +18,36 @@ public class Post extends Time {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "postId")
+    @Column(name = "post_id")
     private Long postId;
 
     private String title; // 제목
     private String content; // 내용
 
     @ManyToOne
-    @JoinColumn(name = "locationId")
+    @JoinColumn(name = "location_id")
     private Location location; // 거래 장소
 
     private Integer time; // 거래 시간
     private Integer price; // 가격
 
     @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "moodId")
+    @JoinColumn(name = "mood_id")
     private Mood mood; // 감정 키워드
 
     private String imgUrl; // 사진
 
-/*    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;*/
+    private User user;
 
     @Builder
-    public Post(String title, String content, Location location, Integer time, Integer price, Category category, Mood mood, String imgUrl) {
+    public Post(User user, String title, String content, Location location, Integer time, Integer price, Category category, Mood mood, String imgUrl) {
+        this.user = user;
         this.title = title;
         this.content = content;
         this.location = location;

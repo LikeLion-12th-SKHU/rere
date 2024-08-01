@@ -66,11 +66,11 @@ public class PostController {
     }
 
     // 글 작성자별 조회(내 글 조회)
-    /*@GetMapping("/users/{userId}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<PostListResDto> postFindByUserId(@PathVariable("userId") Long userId) {
         PostListResDto postListResDto = postService.postFindByUserId(userId);
         return new ResponseEntity<>(postListResDto, HttpStatus.OK);
-    }*/
+    }
 
     // 글 검색 조회
 

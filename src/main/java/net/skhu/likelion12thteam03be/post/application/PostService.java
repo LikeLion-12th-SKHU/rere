@@ -14,6 +14,10 @@ import net.skhu.likelion12thteam03be.post.api.dto.response.PostListResDto;
 import net.skhu.likelion12thteam03be.post.domain.Post;
 import net.skhu.likelion12thteam03be.post.domain.repository.PostRepository;
 import net.skhu.likelion12thteam03be.s3.S3Service;
+import net.skhu.likelion12thteam03be.user.domain.User;
+import net.skhu.likelion12thteam03be.user.domain.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,11 +36,28 @@ public class PostService {
     private final LocationRepository locationRepository;
     private final S3Service s3Service;
     private final MoodRepository moodRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void postSave(PostSaveReqDto postSaveReqDto, MultipartFile multipartFile, Principal principal) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("인증되지 않은 사용자입니다.");
+        }
+        String loginId = authentication.getName();
+        System.out.println("In PostService : loginId = " + loginId);
         String imgUrl = s3Service.upload(multipartFile, "post");
-        Long id = Long.parseLong(principal.getName());
+/*        System.out.println("---------------------------");
+        System.out.println(principal.getName());
+        System.out.println("---------------------------");*/
+//        String LoginId = principal.getName();
+//        Long id = Long.parseLong(principal.getName());
+
+        /*User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다. id = " + id));*/
+
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다. LoginId = " + loginId));
 
         Location location = locationRepository.findById(postSaveReqDto.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postSaveReqDto.locationId()));
@@ -48,6 +69,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 분위기가 존재하지 않습니다. moodId = " + postSaveReqDto.moodId()));
 
         Post post = Post.builder()
+                .user(user)
                 .title(postSaveReqDto.title())
                 .content(postSaveReqDto.content())
                 .location(location)
