@@ -40,7 +40,6 @@ public class PostService {
     public void postSave(PostSaveReqDto postSaveReqDto, MultipartFile multipartFile, Principal principal) throws IOException {
         String imgUrl = s3Service.upload(multipartFile, "post");
         String loginId = principal.getName();
-        System.out.println(loginId);
 
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id = " + loginId));
@@ -145,10 +144,17 @@ public class PostService {
 
     // 글 수정
     @Transactional
-    public void postUpdate(Long postId, PostUpdateReqDto postUpdateReqDto, MultipartFile multipartFile) throws IOException {
+    public void postUpdate(Long postId, PostUpdateReqDto postUpdateReqDto, MultipartFile multipartFile, Principal principal) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 글을 수정할 수 없습니다. postId = " + postId)
         );
+
+        String loginId = principal.getName();
+        User currentUser = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("현재 사용자 정보를 찾을 수 없습니다. username = " + loginId));
+        if (!post.getUser().getLoginId().equals(currentUser.getLoginId())) {
+            throw new SecurityException("이 글을 수정할 권한이 없습니다.");
+        }
 
         Location location = locationRepository.findById(postUpdateReqDto.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postUpdateReqDto.locationId()));
@@ -162,16 +168,21 @@ public class PostService {
         String imgUrl = s3Service.upload(multipartFile, "post");
 
         post.update(location, category, postUpdateReqDto, mood, imgUrl);
-        PostInfoResDto.from(post);
+        postRepository.save(post);
     }
 
     // 글 삭제
     @Transactional
-    public void postDelete(Long postId) throws IOException {
+    public void postDelete(Long postId, Principal principal) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 글을 삭제할 수 없습니다. postId = " + postId)
         );
-
+        String loginId = principal.getName();
+        User currentUser = userRepository.findByLoginId(loginId)
+                .orElseThrow(()-> new IllegalArgumentException("현재 사용자 정보를 찾을 수 없습니다. username = " + loginId));
+        if (!post.getUser().getLoginId().equals(currentUser.getLoginId())) {
+            throw new SecurityException("이 글을 삭제할 권한이 없습니다.");
+        }
         Optional<String> imgUrl = Optional.ofNullable(post.getImgUrl());
 
         imgUrl.ifPresentOrElse(

@@ -25,7 +25,10 @@ public class PostController {
 
     // 글 저장
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> postSave(@RequestPart("post") PostSaveReqDto postSaveReqDto, @RequestPart("imgUrl") MultipartFile imgUrl, Principal principal) throws IOException {
+    public ResponseEntity<String> postSave(
+            @RequestPart("post") PostSaveReqDto postSaveReqDto,
+            @RequestPart("imgUrl") MultipartFile imgUrl,
+            Principal principal) throws IOException {
         postService.postSave(postSaveReqDto, imgUrl, principal);
         return new ResponseEntity<>("Successful Post Save", HttpStatus.CREATED);
     }
@@ -77,15 +80,19 @@ public class PostController {
 
     // 글 수정
     @PatchMapping("/{postId}")
-    public ResponseEntity<String> postUpdate(@PathVariable("postId") Long postId, @RequestPart("post") PostUpdateReqDto postUpdateReqDto, @RequestPart("imgUrl") MultipartFile imgUrl) throws IOException {
-        postService.postUpdate(postId, postUpdateReqDto, imgUrl);
+    public ResponseEntity<String> postUpdate(
+            @PathVariable("postId") Long postId,
+            @RequestPart("post") PostUpdateReqDto postUpdateReqDto,
+            @RequestPart("imgUrl") MultipartFile imgUrl,
+            Principal principal) throws IOException {
+        postService.postUpdate(postId, postUpdateReqDto, imgUrl, principal);
         return new ResponseEntity<>("Successful Post Update", HttpStatus.OK);
     }
 
     // 글 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> postDelete(@PathVariable("postId") Long postId) throws IOException {
-        postService.postDelete(postId);
+    public ResponseEntity<String> postDelete(@PathVariable("postId") Long postId, Principal principal) throws IOException {
+        postService.postDelete(postId, principal);
         return new ResponseEntity<>("Successful Post Delete", HttpStatus.OK);
     }
 }

@@ -55,6 +55,7 @@ public class Post extends Time {
         this.category = category;
         this.mood = mood;
         this.imgUrl = imgUrl;
+        this.user = user;
     }
 
     public void update(Location location, Category category, PostUpdateReqDto postUpdateReqDto, Mood mood, String imgUrl) {
