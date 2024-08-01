@@ -49,7 +49,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         System.out.println("Jwt token : " + token);
 
         if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
-            return token.substring(BEARER_PREFIX.length()).trim();
+            return token.substring(BEARER_PREFIX.length());
         }
 
         return null;

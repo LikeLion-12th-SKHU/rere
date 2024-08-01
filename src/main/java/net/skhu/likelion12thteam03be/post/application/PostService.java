@@ -44,7 +44,6 @@ public class PostService {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id = " + loginId));
 
-
         Location location = locationRepository.findById(postSaveReqDto.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postSaveReqDto.locationId()));
 
