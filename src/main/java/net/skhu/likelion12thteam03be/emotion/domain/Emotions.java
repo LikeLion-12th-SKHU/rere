@@ -1,26 +1,5 @@
 package net.skhu.likelion12thteam03be.emotion.domain;
 
-public enum Emotions {  //  converter
-    HAPPY("행복한"),
-    HURRIED("괴로운"),
-    DULL("암울한"),
-    TOUCHED("감동적인"),
-    EXCITING("신나는"),
-    RELAXED("편안한"),
-    FEARFUL("두려운"),
-    INTERESTING("흥미로운"),
-    NERVOUS("긴장한"),
-    ANXIOUS("불안한"),
-    JOYFUL("기쁜"),
-    CONCERNED("걱정되는"),
-    EXCITED("설레는"),
-    WEAPON("무기력한"),
-    FRUSTRATED("답답한"),
-    FRESH("상쾌한");
-
-    private final String name;
-
-    Emotions(String name) {
-        this.name = name;
-    }
+public enum Emotions {
+    행복한, 괴로운, 암울한, 감동적인, 신나는, 편안한, 두려운, 흥미로운, 긴장한, 불안한, 기쁜, 걱정되는, 설레는, 무기력한, 답답한, 상쾌한
 }

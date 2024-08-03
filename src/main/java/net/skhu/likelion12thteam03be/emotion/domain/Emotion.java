@@ -12,19 +12,19 @@ import lombok.NoArgsConstructor;
 public class Emotion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "emotion_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    Emotions emotions;
+    private Emotions name;
 
     private String furniture;
     private String type;
     private String animalPic;
 
     @Builder
-    public Emotion(Long id, Emotions emotions, String furniture, String type, String animalPic) {
-        this.id = id;
-        this.emotions = emotions;
+    public Emotion(Emotions name, String furniture, String type, String animalPic) {
+        this.name = name;
         this.furniture = furniture;
         this.type = type;
         this.animalPic = animalPic;
