@@ -24,8 +24,8 @@ public class Mood {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "mood", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> postList = new ArrayList<>();
+    @ManyToMany(mappedBy = "moods", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public Mood(String name) {
