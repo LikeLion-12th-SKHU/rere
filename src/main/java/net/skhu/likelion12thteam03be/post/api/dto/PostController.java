@@ -5,6 +5,7 @@ import net.skhu.likelion12thteam03be.post.api.dto.request.PostUpdateReqDto;
 import net.skhu.likelion12thteam03be.post.api.dto.response.PostInfoResDto;
 import net.skhu.likelion12thteam03be.post.api.dto.response.PostListResDto;
 import net.skhu.likelion12thteam03be.post.application.PostService;
+import net.skhu.likelion12thteam03be.post.domain.Post;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
@@ -63,8 +65,8 @@ public class PostController {
 
     // 글 분위기별 조회
     @GetMapping("/moods/{moodId}")
-    public ResponseEntity<PostListResDto> postFindByMoodId(@PathVariable("moodId") Long moodId) {
-        PostListResDto postListResDto = postService.postFindByMoodId(moodId);
+    public ResponseEntity<PostListResDto> postFindByMoodId(@PathVariable("moodId") List<Long> moodIds) {
+        PostListResDto postListResDto = postService.postFindByMoodIds(moodIds);
         return new ResponseEntity<>(postListResDto, HttpStatus.OK);
     }
 

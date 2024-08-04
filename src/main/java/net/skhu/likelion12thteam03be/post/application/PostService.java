@@ -23,8 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = false)
@@ -43,7 +45,7 @@ public class PostService {
         String loginId = principal.getName();
 
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id = " + loginId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. loginId = " + loginId));
 
         Location location = locationRepository.findById(postSaveReqDto.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 위치가 존재하지 않습니다. locationId = " + postSaveReqDto.locationId()));
@@ -51,8 +53,7 @@ public class PostService {
         Category category = categoryRepository.findById(postSaveReqDto.categoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다. categoryId = " + postSaveReqDto.categoryId()));
 
-        Mood mood = moodRepository.findById(postSaveReqDto.moodId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 분위기가 존재하지 않습니다. moodId = " + postSaveReqDto.moodId()));
+        List<Mood> moods = moodRepository.findAllById(postSaveReqDto.moodIds());
 
         Post post = Post.builder()
                 .title(postSaveReqDto.title())
@@ -61,7 +62,7 @@ public class PostService {
                 .time(postSaveReqDto.time())
                 .price(postSaveReqDto.price())
                 .category(category)
-                .mood(mood)
+                .moods(moods)
                 .imgUrl(imgUrl)
                 .user(user)
                 .build();
@@ -115,15 +116,18 @@ public class PostService {
     }
 
     // 글 분위기별 조회
-    public PostListResDto postFindByMoodId(Long moodId) {
-        Optional<Post> posts = Optional.ofNullable(postRepository.findById(moodId).orElseThrow(
-                () -> new IllegalArgumentException("해당 분위기의 글을 찾을 수 없습니다. moodId = " + moodId)
-        ));
+    public PostListResDto postFindByMoodIds(List<Long> moodIds) {
+        List<PostInfoResDto> postInfoResDtoList = new ArrayList<>();
 
-        List<PostInfoResDto> postInfoResDtoList = posts.stream()
-                .map(PostInfoResDto::from)
-                .toList();
+        for (Long moodId : moodIds) {
+            List<Post> posts = postRepository.findByMoodId(moodId);
 
+            List<PostInfoResDto> collectPostInfoResDtoList = posts.stream()
+                    .map(PostInfoResDto::from)
+                    .collect(Collectors.toList());
+
+            postInfoResDtoList.addAll(collectPostInfoResDtoList);
+        }
         return PostListResDto.from(postInfoResDtoList);
     }
 
@@ -162,12 +166,11 @@ public class PostService {
         Category category = categoryRepository.findById(postUpdateReqDto.categoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다. categoryId = " + postUpdateReqDto.categoryId()));
 
-        Mood mood = moodRepository.findById(postUpdateReqDto.moodId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 분위기가 존재하지 않습니다. moodId = " + postUpdateReqDto.moodId()));
+        List<Mood> moods = moodRepository.findAllById(postUpdateReqDto.moodIds());
 
         String imgUrl = s3Service.upload(multipartFile, "post");
 
-        post.update(location, category, postUpdateReqDto, mood, imgUrl);
+        post.update(location, category, postUpdateReqDto, moods, imgUrl);
         postRepository.save(post);
     }
 
@@ -190,7 +193,7 @@ public class PostService {
                     try {
                         s3Service.delete(url, "post");
                     } catch (IllegalArgumentException e) {
-                        throw new IllegalArgumentException("이미지 삭제 중 오류 발 생", e);
+                        throw new IllegalArgumentException("이미지 삭제 중 오류 발생", e);
                     }
                     postRepository.delete(post);
                 },

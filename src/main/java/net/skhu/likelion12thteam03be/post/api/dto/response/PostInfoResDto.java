@@ -7,6 +7,7 @@ import net.skhu.likelion12thteam03be.mood.domain.Mood;
 import net.skhu.likelion12thteam03be.post.domain.Post;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 public record PostInfoResDto(
@@ -17,7 +18,7 @@ public record PostInfoResDto(
         Integer time,
         Integer price,
         Category category,
-        Mood mood,
+        List<Mood> moods,
         LocalDateTime createDate,
         LocalDateTime modifiedDate
 ) {
@@ -29,7 +30,7 @@ public record PostInfoResDto(
                 .time(post.getTime())
                 .price(post.getPrice())
                 .category(post.getCategory())
-                .mood(post.getMood())
+                .moods(post.getMoods())
                 .imgUrl(post.getImgUrl())
                 .createDate(post.getCreateDate())
                 .modifiedDate(post.getModifiedDate())

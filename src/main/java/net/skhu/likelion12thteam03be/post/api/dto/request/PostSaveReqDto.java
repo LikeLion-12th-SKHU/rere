@@ -1,5 +1,7 @@
 package net.skhu.likelion12thteam03be.post.api.dto.request;
 
+import java.util.List;
+
 public record PostSaveReqDto(
         String title,
         String content,
@@ -7,6 +9,6 @@ public record PostSaveReqDto(
         Integer time,
         Integer price,
         Long categoryId,
-        Long moodId
+        List<Long> moodIds
 ) {
 }

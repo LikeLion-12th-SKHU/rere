@@ -11,6 +11,8 @@ import net.skhu.likelion12thteam03be.mood.domain.Mood;
 import net.skhu.likelion12thteam03be.post.api.dto.request.PostUpdateReqDto;
 import net.skhu.likelion12thteam03be.user.domain.User;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,9 +37,15 @@ public class Post extends Time {
     @JoinColumn(name = "categoryId")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "moodId")
-    private Mood mood; // 감정 키워드
+    /*@ManyToOne
+    @JoinColumn(name = "moodId")*/
+    @ManyToMany
+    @JoinTable(
+            name = "post_moods",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "mood_id")
+    )
+    private List<Mood> moods; // 분위기 키워드
 
     private String imgUrl; // 사진
 
@@ -46,26 +54,26 @@ public class Post extends Time {
     private User user;
 
     @Builder
-    public Post(String title, String content, Location location, Integer time, Integer price, Category category, Mood mood, String imgUrl, User user) {
+    public Post(String title, String content, Location location, Integer time, Integer price, Category category, List<Mood> moods, String imgUrl, User user) {
         this.title = title;
         this.content = content;
         this.location = location;
         this.time = time;
         this.price = price;
         this.category = category;
-        this.mood = mood;
+        this.moods = moods;
         this.imgUrl = imgUrl;
         this.user = user;
     }
 
-    public void update(Location location, Category category, PostUpdateReqDto postUpdateReqDto, Mood mood, String imgUrl) {
+    public void update(Location location, Category category, PostUpdateReqDto postUpdateReqDto, List<Mood> moods, String imgUrl) {
         this.title = postUpdateReqDto.title();
         this.content = postUpdateReqDto.content();
         this.location = location;
         this.time = postUpdateReqDto.time();
         this.price = postUpdateReqDto.price();
         this.category = category;
-        this.mood = mood;
+        this.moods = moods;
         this.imgUrl = imgUrl;
     }
 }
