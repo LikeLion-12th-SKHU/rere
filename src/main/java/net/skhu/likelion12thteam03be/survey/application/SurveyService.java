@@ -29,7 +29,7 @@ public class SurveyService {
     private final ColorRepository colorRepository;
 
     @Transactional
-    public SurveyResDto save(SurveySaveReqDto surveySaveReqDto, Principal principal) {
+    public void save(SurveySaveReqDto surveySaveReqDto, Principal principal) {
         String loginId = principal.getName();
         if (surveyRepository.existsByUserLoginId(loginId)){
             throw new SurveyAlreadyExistsException("이미 설문조사 결과가 존재합니다. 유저 아이디 = " + loginId);
@@ -47,7 +47,13 @@ public class SurveyService {
                 .user(user)
                 .build();
         surveyRepository.save(survey);
+    }
 
+    public SurveyResDto findByLoginId(Principal principal) {
+        String loginId = principal.getName();
+        Survey survey = surveyRepository.findByUserLoginId(loginId);
+
+        List<Color> colors = survey.getColors();
         List<String> colorComments = colors.stream()
                 .map(Color::getComment)
                 .toList();
@@ -65,7 +71,7 @@ public class SurveyService {
         surveyRepository.delete(survey);
     }
 
-/*    @Transactional
+    @Transactional
     public SurveyResDto update(Long surveyId, SurveySaveReqDto surveySaveReqDto, Principal principal) {
         String loginId = principal.getName();
         Survey survey = surveyRepository.findById(surveyId)
@@ -91,15 +97,4 @@ public class SurveyService {
         return SurveyResDto.from(survey, colorComments);
     }
 
-    public SurveyResDto findById(Long surveyId) {
-        Survey survey = surveyRepository.findById(surveyId)
-                .orElseThrow(() -> new IllegalArgumentException("설문조사 결과를 찾을 수 없습니다: " + surveyId));
-
-        List<Color> colors = survey.getColors();
-        List<String> colorComments = colors.stream()
-                .map(Color::getComment)
-                .toList();
-
-        return SurveyResDto.from(survey, colorComments);
-    }*/
 }

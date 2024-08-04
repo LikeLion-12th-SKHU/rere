@@ -10,6 +10,7 @@ import net.skhu.likelion12thteam03be.color.domian.Color;
 import net.skhu.likelion12thteam03be.emotion.domain.Emotion;
 import net.skhu.likelion12thteam03be.user.domain.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,7 +37,7 @@ public class Survey {
             joinColumns = @JoinColumn(name = "survey_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id")
     )
-    private List<Color> colors;
+    private List<Color> colors = new ArrayList<>();
 
     private int score;
 
