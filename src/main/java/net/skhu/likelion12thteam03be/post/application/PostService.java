@@ -16,6 +16,7 @@ import net.skhu.likelion12thteam03be.post.domain.repository.PostRepository;
 import net.skhu.likelion12thteam03be.s3.S3Service;
 import net.skhu.likelion12thteam03be.user.domain.User;
 import net.skhu.likelion12thteam03be.user.domain.repository.UserRepository;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -145,6 +146,16 @@ public class PostService {
     }
 
     // 글 검색 조회
+    public PostListResDto postFindByInput(String input) {
+        String searchInput = "%" + input + "%";
+        List<Post> posts = postRepository.findByInput(searchInput);
+
+        List<PostInfoResDto> postInfoResDtoList = posts.stream()
+                .map(PostInfoResDto::from)
+                .toList();
+
+        return PostListResDto.from(postInfoResDtoList);
+    }
 
     // 글 수정
     @Transactional
