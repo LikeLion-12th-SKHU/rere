@@ -59,7 +59,6 @@ public class SurveyService {
                         .build())
                         .toList();
         surveyColorRepository.saveAll(surveyColors);
-
     }
 
     public SurveyResDto findByLoginId(Principal principal) {
@@ -97,14 +96,15 @@ public class SurveyService {
         Emotion emotion = emotionRepository.findById(surveySaveReqDto.emotionId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 감정을 찾을 수 없습니다: " + surveySaveReqDto.emotionId()));
         List<Color> colors = colorRepository.findAllById(surveySaveReqDto.colorIds());
+
         List<SurveyColor> surveyColors = colors.stream()
                 .map(color -> SurveyColor.builder()
                         .survey(survey)
                         .color(color)
                         .build())
                 .toList();
-
         survey.update(surveySaveReqDto.score(), emotion, surveyColors);
+
         surveyRepository.save(survey);
     }
 }

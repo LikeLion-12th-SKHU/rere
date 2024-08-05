@@ -38,15 +38,14 @@ public class Survey {
     public Survey(int score, Emotion emotion, List<SurveyColor> colors, User user) {
         this.score = score;
         this.emotion = emotion;
-        this.colors = colors != null ? colors : new ArrayList<>();
+        this.colors = colors;
         this.user = user;
     }
 
     public void update(int score, Emotion emotion, List<SurveyColor> colors) {
         this.score = score;
         this.emotion = emotion;
-        if (colors != null) {
-            this.colors.addAll(colors);
-        }
+        this.colors.clear();
+        this.colors.addAll(colors);
     }
 }
