@@ -1,6 +1,7 @@
 package net.skhu.likelion12thteam03be.post.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.skhu.likelion12thteam03be.category.domain.Category;
 import net.skhu.likelion12thteam03be.category.domain.repository.CategoryRepository;
 import net.skhu.likelion12thteam03be.location.domain.Location;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = false)
 @RequiredArgsConstructor

@@ -5,7 +5,6 @@ import net.skhu.likelion12thteam03be.post.api.dto.request.PostUpdateReqDto;
 import net.skhu.likelion12thteam03be.post.api.dto.response.PostInfoResDto;
 import net.skhu.likelion12thteam03be.post.api.dto.response.PostListResDto;
 import net.skhu.likelion12thteam03be.post.application.PostService;
-import net.skhu.likelion12thteam03be.post.domain.Post;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
