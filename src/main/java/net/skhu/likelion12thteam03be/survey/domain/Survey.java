@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.skhu.likelion12thteam03be.SurveyColor.SurveyColor;
 import net.skhu.likelion12thteam03be.color.domian.Color;
 import net.skhu.likelion12thteam03be.emotion.domain.Emotion;
 import net.skhu.likelion12thteam03be.user.domain.User;
@@ -23,7 +24,6 @@ public class Survey {
     private Long id;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -31,25 +31,24 @@ public class Survey {
     @JoinColumn(name = "emotion_id")
     private Emotion emotion;
 
-    @ManyToMany
-    @JoinTable(
-            name = "survey_colors",
-            joinColumns = @JoinColumn(name = "survey_id"),
-            inverseJoinColumns = @JoinColumn(name = "color_id")
-    )
-    private List<Color> colors = new ArrayList<>();
+    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SurveyColor> colors = new ArrayList<>();
 
     private int score;
 
+    public void setColors(List<SurveyColor> colors) {
+        this.colors = colors;
+    }
+
     @Builder
-    public Survey(int score, Emotion emotion, List<Color> colors, User user) {
+    public Survey(int score, Emotion emotion, List<SurveyColor> colors, User user) {
         this.score = score;
         this.emotion = emotion;
         this.colors = colors;
         this.user = user;
     }
 
-    public void update(int score, Emotion emotion, List<Color> colors) {
+    public void update(int score, Emotion emotion, List<SurveyColor> colors) {
         this.score = score;
         this.emotion = emotion;
         this.colors = colors;

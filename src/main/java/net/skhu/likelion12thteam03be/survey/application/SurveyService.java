@@ -1,7 +1,10 @@
 package net.skhu.likelion12thteam03be.survey.application;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
+import net.skhu.likelion12thteam03be.SurveyColor.SurveyColor;
+import net.skhu.likelion12thteam03be.SurveyColor.SurveyColorRepository;
 import net.skhu.likelion12thteam03be.color.domian.Color;
 import net.skhu.likelion12thteam03be.color.domian.repository.ColorRepository;
 import net.skhu.likelion12thteam03be.emotion.domain.Emotion;
@@ -27,6 +30,7 @@ public class SurveyService {
     private final UserRepository userRepository;
     private final EmotionRepository emotionRepository;
     private final ColorRepository colorRepository;
+    private final SurveyColorRepository surveyColorRepository;
 
     @Transactional
     public void save(SurveySaveReqDto surveySaveReqDto, Principal principal) {
@@ -43,19 +47,30 @@ public class SurveyService {
         Survey survey = Survey.builder()
                 .score(surveySaveReqDto.score())
                 .emotion(emotion)
-                .colors(colors)
                 .user(user)
                 .build();
         surveyRepository.save(survey);
+
+        List<SurveyColor> surveyColors = colors.stream()
+                .map(color -> SurveyColor.builder()
+                        .survey(survey)
+                        .color(color)
+                        .build())
+                        .toList();
+
+        surveyColorRepository.saveAll(surveyColors);
+        survey.setColors(surveyColors);
     }
 
     public SurveyResDto findByLoginId(Principal principal) {
         String loginId = principal.getName();
-        Survey survey = surveyRepository.findByUserLoginId(loginId);
+        Survey survey = surveyRepository.findByUserLoginId(loginId)
+                .orElseThrow(() -> new NotFoundException("설문조사 결과를 찾을 수 없습니다."));
 
-        List<Color> colors = survey.getColors();
-        List<String> colorComments = colors.stream()
-                .map(Color::getComment)
+
+        List<SurveyColor> surveyColors  = survey.getColors();
+        List<String> colorComments = surveyColors .stream()
+                .map(surveyColor -> surveyColor.getColor().getComment())
                 .toList();
 
         return SurveyResDto.from(survey, colorComments);
@@ -64,37 +79,8 @@ public class SurveyService {
     @Transactional
     public void delete(Principal principal) {
         String loginId = principal.getName();
-        Survey survey = surveyRepository.findByUserLoginId(loginId);
-        if (survey == null) {
-            throw new IllegalArgumentException("삭제할 설문조사가 존재하지 않습니다: " + loginId);
-        }
+        Survey survey = surveyRepository.findByUserLoginId(loginId)
+                .orElseThrow(() -> new NotFoundException("설문조사 결과를 찾을 수 없습니다."));
         surveyRepository.delete(survey);
     }
-
-    @Transactional
-    public SurveyResDto update(Long surveyId, SurveySaveReqDto surveySaveReqDto, Principal principal) {
-        String loginId = principal.getName();
-        Survey survey = surveyRepository.findById(surveyId)
-                .orElseThrow(() -> new IllegalArgumentException("설문조사 결과를 찾을 수 없습니다: " + surveyId));
-
-        if (!survey.getUser().getLoginId().equals(loginId)) {
-            throw new IllegalArgumentException("해당 설문조사를 수정할 권한이 없습니다.");
-        }
-
-        Emotion emotion = emotionRepository.findById(surveySaveReqDto.emotionId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 감정을 찾을 수 없습니다: " + surveySaveReqDto.emotionId()));
-
-        List<Color> colors = colorRepository.findAllById(surveySaveReqDto.colorIds());
-
-
-        survey.update(surveySaveReqDto.score(), emotion, colors);
-
-        surveyRepository.save(survey);
-
-        List<String> colorComments = colors.stream()
-                .map(Color::getComment)
-                .toList();
-        return SurveyResDto.from(survey, colorComments);
-    }
-
 }
