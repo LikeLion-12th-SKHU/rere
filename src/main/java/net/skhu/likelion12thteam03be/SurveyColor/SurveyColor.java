@@ -1,36 +1,29 @@
-/*
-package net.skhu.likelion12thteam03be.SelectColor.domain;
+package net.skhu.likelion12thteam03be.SurveyColor;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import net.skhu.likelion12thteam03be.color.domian.Color;
 import net.skhu.likelion12thteam03be.survey.domain.Survey;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SelectColor {
+public class SurveyColor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "selectColor_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "color_id")
     private Color color;
 
     @Builder
-    public SelectColor(Long id, Survey survey, Color Color) {
-        this.id = id;
+    public SurveyColor(Survey survey, Color color) {
         this.survey = survey;
         this.color = color;
     }
 }
-*/

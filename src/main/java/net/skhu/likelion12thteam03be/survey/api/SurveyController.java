@@ -16,9 +16,15 @@ import java.security.Principal;
 public class SurveyController {
     private final SurveyService surveyService;
     @PostMapping
-    public ResponseEntity<SurveyResDto> createSurvey(@RequestBody SurveySaveReqDto reqDto, Principal principal) {
-        SurveyResDto surveyResDto = surveyService.save(reqDto, principal);
-        return new ResponseEntity<>(surveyResDto, HttpStatus.CREATED);
+    public ResponseEntity<String> createSurvey(@RequestBody SurveySaveReqDto reqDto, Principal principal) {
+        surveyService.save(reqDto, principal);
+        return new ResponseEntity<>("설문조사 저장 완료!", HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<SurveyResDto> findByIdSurvey(Principal principal) {
+        SurveyResDto data = surveyService.findByLoginId(principal);
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @DeleteMapping
@@ -27,19 +33,10 @@ public class SurveyController {
         return new ResponseEntity<>("설문조사 결과가 정상적으로 삭제되었습니다.", HttpStatus.OK);
     }
 
-/*    @PatchMapping("/{surveyId}")
-    public ResponseEntity<SurveyResDto> updateSurvey(
-            @PathVariable Long surveyId,
-            @RequestBody SurveySaveReqDto surveySaveReqDto,
-            Principal principal) {
-        SurveyResDto response = surveyService.update(surveyId, surveySaveReqDto, principal);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @PatchMapping
+    public ResponseEntity<String> updateSurvey(
+            @RequestBody SurveySaveReqDto surveySaveReqDto, Principal principal) {
+        surveyService.update(surveySaveReqDto, principal);
+        return new ResponseEntity<>("설문조사 수정 완료!", HttpStatus.OK);
     }
-
-    @GetMapping("/{surveyId}")
-    public ResponseEntity<SurveyResDto> findByIdSurvey(@PathVariable Long surveyId) {
-        SurveyResDto response = surveyService.findById(surveyId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }*/
-
 }
