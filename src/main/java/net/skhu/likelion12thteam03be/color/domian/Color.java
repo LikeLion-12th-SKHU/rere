@@ -1,6 +1,5 @@
 package net.skhu.likelion12thteam03be.color.domian;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

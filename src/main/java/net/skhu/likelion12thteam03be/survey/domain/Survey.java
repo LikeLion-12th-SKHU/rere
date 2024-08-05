@@ -1,13 +1,11 @@
 package net.skhu.likelion12thteam03be.survey.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.skhu.likelion12thteam03be.SurveyColor.SurveyColor;
-import net.skhu.likelion12thteam03be.color.domian.Color;
 import net.skhu.likelion12thteam03be.emotion.domain.Emotion;
 import net.skhu.likelion12thteam03be.user.domain.User;
 
@@ -36,21 +34,19 @@ public class Survey {
 
     private int score;
 
-    public void setColors(List<SurveyColor> colors) {
-        this.colors = colors;
-    }
-
     @Builder
     public Survey(int score, Emotion emotion, List<SurveyColor> colors, User user) {
         this.score = score;
         this.emotion = emotion;
-        this.colors = colors;
+        this.colors = colors != null ? colors : new ArrayList<>();
         this.user = user;
     }
 
     public void update(int score, Emotion emotion, List<SurveyColor> colors) {
         this.score = score;
         this.emotion = emotion;
-        this.colors = colors;
+        if (colors != null) {
+            this.colors.addAll(colors);
+        }
     }
 }

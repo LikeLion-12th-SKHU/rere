@@ -38,6 +38,7 @@ public class SurveyService {
         if (surveyRepository.existsByUserLoginId(loginId)){
             throw new SurveyAlreadyExistsException("이미 설문조사 결과가 존재합니다. 유저 아이디 = " + loginId);
         }
+
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("유저 정보를 찾을 수 없습니다: " + loginId));
         Emotion emotion = emotionRepository.findById(surveySaveReqDto.emotionId())
@@ -57,9 +58,8 @@ public class SurveyService {
                         .color(color)
                         .build())
                         .toList();
-
         surveyColorRepository.saveAll(surveyColors);
-        survey.setColors(surveyColors);
+
     }
 
     public SurveyResDto findByLoginId(Principal principal) {
@@ -82,5 +82,29 @@ public class SurveyService {
         Survey survey = surveyRepository.findByUserLoginId(loginId)
                 .orElseThrow(() -> new NotFoundException("설문조사 결과를 찾을 수 없습니다."));
         surveyRepository.delete(survey);
+    }
+
+    @Transactional
+    public void update(SurveySaveReqDto surveySaveReqDto, Principal principal) {
+        String loginId = principal.getName();
+        Survey survey = surveyRepository.findByUserLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("설문조사 결과를 찾을 수 없습니다: " + loginId));
+
+        if (!survey.getUser().getLoginId().equals(loginId)) {
+            throw new IllegalArgumentException("해당 설문조사를 수정할 권한이 없습니다.");
+        }
+
+        Emotion emotion = emotionRepository.findById(surveySaveReqDto.emotionId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 감정을 찾을 수 없습니다: " + surveySaveReqDto.emotionId()));
+        List<Color> colors = colorRepository.findAllById(surveySaveReqDto.colorIds());
+        List<SurveyColor> surveyColors = colors.stream()
+                .map(color -> SurveyColor.builder()
+                        .survey(survey)
+                        .color(color)
+                        .build())
+                .toList();
+
+        survey.update(surveySaveReqDto.score(), emotion, surveyColors);
+        surveyRepository.save(survey);
     }
 }
