@@ -1,5 +1,6 @@
 package net.skhu.likelion12thteam03be.post.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -52,7 +53,8 @@ public class Post extends Time {
     private User user;
 
     @Builder
-    public Post(String title, String content, Location location, Integer time, Integer price, Category category, List<Mood> moods, String imgUrl, User user) {
+    public Post(User user, String title, String content, Location location, Integer time, Integer price, Category category, List<Mood> moods, String imgUrl) {
+        this.user = user;
         this.title = title;
         this.content = content;
         this.location = location;
@@ -61,7 +63,6 @@ public class Post extends Time {
         this.category = category;
         this.moods = moods;
         this.imgUrl = imgUrl;
-        this.user = user;
     }
 
     public void update(Location location, Category category, PostUpdateReqDto postUpdateReqDto, List<Mood> moods, String imgUrl) {

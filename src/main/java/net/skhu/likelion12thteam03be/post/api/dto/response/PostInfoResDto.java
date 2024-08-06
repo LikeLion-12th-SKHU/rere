@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public record PostInfoResDto(
         Long postId,
+        String nickname,
         String title,
         String content,
         String imgUrl,
@@ -26,6 +27,7 @@ public record PostInfoResDto(
     public static PostInfoResDto from(Post post) {
         return PostInfoResDto.builder()
                 .postId(post.getPostId())
+                .nickname(post.getUser().getNickname())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .location(post.getLocation())

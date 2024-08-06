@@ -41,11 +41,17 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void postSave(PostSaveReqDto postSaveReqDto, @RequestPart(required = false) MultipartFile multipartFile, Principal principal) throws IOException {
+    public void postSave(PostSaveReqDto postSaveReqDto, @RequestPart(required = false) MultipartFile multipartFile, Principal principal) {
         String loginId = principal.getName();
 
-        String imgUrl = s3Service.upload(multipartFile, "post");
-        
+//        String imgUrl = s3Service.upload(multipartFile, "post");
+        String imgUrl = null;
+        try {
+            imgUrl = (multipartFile == null) ? s3Service.upload(multipartFile, "post") : null;
+        } catch (IOException e) {
+            imgUrl = null;
+        }
+
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. loginId = " + loginId));
 

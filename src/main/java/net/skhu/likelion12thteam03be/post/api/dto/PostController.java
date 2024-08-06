@@ -28,7 +28,7 @@ public class PostController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> postSave(
             @RequestPart("post") PostSaveReqDto postSaveReqDto,
-            @RequestPart("imgUrl") MultipartFile imgUrl,
+            @RequestPart(value = "imgUrl", required = false) MultipartFile imgUrl,
             Principal principal) throws IOException {
         postService.postSave(postSaveReqDto, imgUrl, principal);
         return new ResponseEntity<>("Successful Post Save", HttpStatus.CREATED);
