@@ -84,6 +84,13 @@ public class PostController {
         return new ResponseEntity<>(postListResDto, HttpStatus.OK);
     }
 
+    // 글 추천 조회
+    @GetMapping("/recommend/{recommend}")
+    public ResponseEntity<PostListResDto> postFindByRecommend(@PathVariable("recommend") String recommend) {
+        PostListResDto postListResDto = postService.postFindByRecommend(recommend);
+        return new ResponseEntity<>(postListResDto, HttpStatus.OK);
+    }
+
     // 글 수정
     @PatchMapping("/{postId}")
     public ResponseEntity<String> postUpdate(

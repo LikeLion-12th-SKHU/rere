@@ -15,4 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select distinct p from Post p where p.title like :input or p.content like :input ")
     List<Post> findByInput(String input);
+
+    @Query("select distinct p from Post p join fetch p.moods m where p.category.name like :recommend or m.name like :recommend ")
+    List<Post> findByRecommend(String recommend);
 }
