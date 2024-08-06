@@ -43,7 +43,7 @@ public class PostController {
 
     // 글 개별 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<PostInfoResDto> postFindById(@PathVariable Long postId) {
+    public ResponseEntity<PostInfoResDto> postFindById(@PathVariable("postId") Long postId) {
         PostInfoResDto postInfoResDto = postService.postFindById(postId);
         return new ResponseEntity<>(postInfoResDto, HttpStatus.OK);
     }
