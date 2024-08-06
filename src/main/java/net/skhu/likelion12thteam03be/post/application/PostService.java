@@ -1,7 +1,6 @@
 package net.skhu.likelion12thteam03be.post.application;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.skhu.likelion12thteam03be.category.domain.Category;
 import net.skhu.likelion12thteam03be.category.domain.repository.CategoryRepository;
 import net.skhu.likelion12thteam03be.location.domain.Location;
@@ -29,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
+
 @Service
 @Transactional(readOnly = false)
 @RequiredArgsConstructor
@@ -43,9 +42,10 @@ public class PostService {
 
     @Transactional
     public void postSave(PostSaveReqDto postSaveReqDto, @RequestPart(required = false) MultipartFile multipartFile, Principal principal) throws IOException {
-        String imgUrl = s3Service.upload(multipartFile, "post");
         String loginId = principal.getName();
 
+        String imgUrl = s3Service.upload(multipartFile, "post");
+        
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. loginId = " + loginId));
 
@@ -147,10 +147,42 @@ public class PostService {
     }
 
     // 글 검색 조회
+    public PostListResDto postFindByInput(String input) {
+        String searchInput = "%" + input + "%";
+        List<Post> posts = postRepository.findByInput(searchInput);
+
+        List<PostInfoResDto> postInfoResDtoList = posts.stream()
+                .map(PostInfoResDto::from)
+                .toList();
+
+        return PostListResDto.from(postInfoResDtoList);
+    }
+
+    // 글 추천 조회
+    public PostListResDto postFindByRecommend(String recommend) {
+        List<PostInfoResDto> postInfoResDtoList = new ArrayList<>();
+        List<PostInfoResDto> collectPostInfoResDtoList = new ArrayList<>();
+        String recommendWord = "%" + recommend + "%";
+
+        List<Post> posts = postRepository.findByInput(recommendWord);
+        collectPostInfoResDtoList = posts.stream()
+                .map(PostInfoResDto::from)
+                .toList();
+        postInfoResDtoList.addAll(collectPostInfoResDtoList);
+
+        posts = postRepository.findByRecommend(recommendWord);
+        collectPostInfoResDtoList = posts.stream()
+                .map(PostInfoResDto::from)
+                .toList();
+
+        postInfoResDtoList.addAll(collectPostInfoResDtoList);
+
+        return PostListResDto.from(postInfoResDtoList);
+    }
 
     // 글 수정
     @Transactional
-    public void postUpdate(Long postId, PostUpdateReqDto postUpdateReqDto, MultipartFile multipartFile, Principal principal) throws IOException {
+    public void postUpdate(Long postId, PostUpdateReqDto postUpdateReqDto,@RequestPart(required = false) MultipartFile multipartFile, Principal principal) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 글을 수정할 수 없습니다. postId = " + postId)
         );

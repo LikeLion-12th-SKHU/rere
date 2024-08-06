@@ -37,8 +37,6 @@ public class Post extends Time {
     @JoinColumn(name = "categoryId")
     private Category category;
 
-    /*@ManyToOne
-    @JoinColumn(name = "moodId")*/
     @ManyToMany
     @JoinTable(
             name = "post_moods",

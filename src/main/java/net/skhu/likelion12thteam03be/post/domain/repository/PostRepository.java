@@ -6,11 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("select p from Post p join fetch p.moods m where m.moodId = :moodId ")
+    @Query("select distinct p from Post p join fetch p.moods m where m.moodId = :moodId ")
     List<Post> findByMoodId(Long moodId);
+
+    @Query("select distinct p from Post p where p.title like :input or p.content like :input ")
+    List<Post> findByInput(String input);
+
+    @Query("select distinct p from Post p join fetch p.moods m where p.category.name like :recommend or m.name like :recommend ")
+    List<Post> findByRecommend(String recommend);
 }

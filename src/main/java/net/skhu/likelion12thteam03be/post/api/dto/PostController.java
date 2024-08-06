@@ -77,7 +77,18 @@ public class PostController {
     }
 
     // 글 검색 조회
+    @GetMapping("/search/{input}")
+    public ResponseEntity<PostListResDto> postFindByInput(@PathVariable("input") String input) {
+        PostListResDto postListResDto = postService.postFindByInput(input);
+        return new ResponseEntity<>(postListResDto, HttpStatus.OK);
+    }
 
+    // 글 추천 조회
+    @GetMapping("/recommend/{recommend}")
+    public ResponseEntity<PostListResDto> postFindByRecommend(@PathVariable("recommend") String recommend) {
+        PostListResDto postListResDto = postService.postFindByRecommend(recommend);
+        return new ResponseEntity<>(postListResDto, HttpStatus.OK);
+    }
 
     // 글 수정
     @PatchMapping("/{postId}")
